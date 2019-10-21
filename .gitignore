@@ -1,0 +1,9 @@
+/venv
+/.idea
+
+*.iml
+.idea/
+out/**
+auxil/**
+src/*.ilg
+src/*.ind

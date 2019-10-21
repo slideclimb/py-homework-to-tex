@@ -1,0 +1,19 @@
+\documentclass[11pt]{exam}
+
+% Needed for PythonTeX
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[framemethod=TikZ]{mdframed}
+
+\usepackage{pythontex}
+
+\newcommand\inputquestion[1]{\question \input{pytex/#1}}
+
+\begin{document}
+    \begin{questions}
+        \inputquestion{exercise1}
+
+        \question
+        This is a question without python.
+    \end{questions}
+\end{document}
