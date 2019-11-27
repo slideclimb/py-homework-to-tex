@@ -3,9 +3,9 @@ from distutils import dir_util
 import os
 
 
-@fixture
-def pytex(datadir):
-    datadir.mkdir()
+# @fixture
+# def pytex(datadir):
+#     datadir.mkdir()
 
 
 @fixture
@@ -19,5 +19,7 @@ def datadir(tmp_path, request):
 
     if os.path.isdir(test_dir):
         dir_util.copy_tree(test_dir, str(tmp_path))
+
+    test_file = tmp_path / "test.tex"
 
     return tmp_path

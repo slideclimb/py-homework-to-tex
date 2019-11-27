@@ -1,7 +1,17 @@
 from copy_to_tex import transform_to_tex
 
 
-def test_copy_comments(datadir):
-    input_file = datadir / "input/comments.py"
-    output_file = datadir / "output/comments.tex"
-    assert transform_to_tex(input_file).read_text() == output_file.read_text()
+def get_input_output_tex(test_name, datadir):
+    return open(datadir / ("input/" + test_name + ".py"), 'r'), \
+           open(datadir / (test_name + "_test.tex"), 'w+'), \
+           open(datadir / ("output/" + test_name + ".tex"), 'r')
+
+
+def test_comments(datadir):
+    py, tex, output = get_input_output_tex("comments", datadir)
+    assert transform_to_tex(py, tex).read() == output.read()
+
+
+def test_comments_part_a(datadir):
+    py, tex, output = get_input_output_tex("comments_part_a", datadir)
+    assert transform_to_tex(py, tex).read() == output.read()
