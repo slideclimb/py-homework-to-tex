@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/slideclimb/py-homework-to-tex.svg?branch=master)](https://travis-ci.com/slideclimb/py-homework-to-tex)
+
 Python template project specifically for handing in python homework in latex. 
 
 ## Before you start
