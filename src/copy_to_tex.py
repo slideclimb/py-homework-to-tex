@@ -5,16 +5,6 @@ from pathlib import Path
 from subprocess import call
 from definitions import ROOT_DIR
 
-SET = 'test-set'
-
-dirname = os.path.dirname(__file__)
-parent = Path(dirname).parent
-
-pybegin = '\\begin{pyconsole}\n'
-pyend = '\\end{pyconsole}\n\n'
-begin_parts = '\\begin{parts}\n'
-end_parts = '\\end{parts}\n'
-
 
 def is_line_comment(next):
     return '#' in next
@@ -31,7 +21,7 @@ def fig_print(tex, figure):
               + "\\end{figure}\n")
 
 
-def transform_to_tex(py, tex):
+def transform_to_tex(py, tex, *comment_escapes):
     # parts = False
     # figures = []
     #
@@ -90,6 +80,16 @@ def transform_to_tex(py, tex):
 
 
 if __name__ == '__main__':
+    SET = 'test-set'
+
+    dirname = os.path.dirname(__file__)
+    parent = Path(dirname).parent
+
+    pybegin = '\\begin{pyconsole}\n'
+    pyend = '\\end{pyconsole}\n\n'
+    begin_parts = '\\begin{parts}\n'
+    end_parts = '\\end{parts}\n'
+
     # Create the directory to store the tex files if it doesn't exist.
     if not os.path.isdir(dirname + '/pytex'):
         os.mkdir(dirname + '/pytex')

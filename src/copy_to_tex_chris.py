@@ -1,9 +1,6 @@
 import os
-import sys
 import re
 from pathlib import Path
-from subprocess import call
-from definitions import ROOT_DIR
 
 SET = 'test-set'
 

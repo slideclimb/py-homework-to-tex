@@ -15,3 +15,16 @@ def test_comments(datadir):
 def test_comments_part_a(datadir):
     py, tex, output = get_input_output_tex("comments_part_a", datadir)
     assert transform_to_tex(py, tex).read() == output.read()
+
+
+def test_comment_in_part(datadir):
+    py, tex, output = get_input_output_tex("comment_in_part", datadir)
+    assert transform_to_tex(py, tex).read() == output.read()
+
+
+def test_comment_escapes(datadir):
+    py, tex, output = get_input_output_tex("comment_escapes", datadir)
+    assert transform_to_tex(py, tex, "INPUT", "SCRIPT", "OUTPUT").read() == output.read()
+
+
+
