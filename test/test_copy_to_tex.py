@@ -19,6 +19,11 @@ def test_parts(datadir):
     assert close_and_read(transform_to_tex(py, tex)) == output.read()
 
 
+def test_just_py(datadir):
+    py, tex, output = get_input_output_tex("just_py", datadir)
+    assert close_and_read(transform_to_tex(py, tex)) == output.read()
+
+
 def test_comments(datadir):
     py, tex, output = get_input_output_tex("comments", datadir)
     assert close_and_read(transform_to_tex(py, tex)) == output.read()

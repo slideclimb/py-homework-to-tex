@@ -1,4 +1,3 @@
-# part a
 # Some text.
 # INPUT
 a = 1

@@ -11,13 +11,10 @@ dirname = os.path.dirname(__file__)
 parent = Path(dirname).parent
 
 pybegin = '\\begin{pyconsole}\n'
-pyend = '\\end{pyconsole}\n\n'
+pyend = '\\end{pyconsole}\n'
 begin_parts = '\\begin{parts}\n'
 end_parts = '\\end{parts}\n'
-
-
-def is_line_comment(next):
-    return '#' in next
+tex_part = "\\part\n"
 
 
 def fig_print(tex, figure):
@@ -32,60 +29,64 @@ def fig_print(tex, figure):
 
 
 def transform_to_tex(py, tex, *comment_escapes):
-    parts = False
-    figures = []
+    """
+    Writes the contents of a Python file to a LaTeX file.
 
+    :param py: The Python file to read from.
+    :param tex: The TeX file to write to.
+    :param comment_escapes: List of comments that should be printed as Python comment.
+    :return:
+    """
     lines = py.readlines()
-    pyconsole = False
+    parts = False
+    pytex = False
+    comment_escapes = [it + '\n' for it in comment_escapes]
+
     for line in lines:
-        # The first part begins.
-        if '# part a' in line:
-            # The first part also has to include the '\begin{parts}'.
-            tex.write(pyend + begin_parts + '\\part\n')
-            parts = True
-            pyconsole = False
-            if not is_line_comment(lines[lines.index(line) + 1]):
+        # Line begins a new part.
+        if re.match(r'# part [a-z]\s*', line):
+            if pytex:
+                tex.write(pyend)
+                pytex = False
+            if not parts:
+                tex.write(begin_parts)
+                parts = True
+            tex.write(tex_part)
+
+        # Line is a comment that should be printed as regular tex.
+        elif line.startswith("# "):
+            if line[2:] in comment_escapes:
+                if not pytex:
+                    tex.write(pybegin)
+                    pytex = True
+                tex.write(line)
+            else:
+                # End the pytex environment if necesarry.
+                if pytex:
+                    tex.write(pyend)
+                    pytex = False
+                # Write the text of the comment to the tex file.
+                tex.write(line[2:])
+
+        # Line is a comment that should be printed as Python comment.
+        elif line[2:] in comment_escapes:
+            if not pytex:
                 tex.write(pybegin)
-                figures = []
-                pyconsole = True
-        # A new part begins.
-        elif re.match('# part [a-z]', line):
-            tex.write(pyend)
-            # Print all the figures from this part.
-            for fig in figures:
-                fig_print(tex, fig)
-            # Start a new part.
-            tex.write('\\part\n')
-            pyconsole = False
-            if not is_line_comment(lines[lines.index(line) + 1]):
-                tex.write(pybegin)
-                figures = []
-                pyconsole = True
-        # There is a comment which can be printed as tex.
-        elif '#' in line and not pyconsole:
-            # Assume that this always comes when a pyconsole environment has already been closed.
-            tex.write(line[2:])
-            # If the next line is not a comment, start a pyconsole environment.
-            if not is_line_comment(lines[lines.index(line) + 1]):
-                tex.write(pybegin)
-                figures = []
-                pyconsole = True
-        # We are in python mode and print everything.
-        else:
-            # If the first line of the file is python, we have to start a pyconsole
-            # environment.
-            if lines.index(line) == 0:
-                tex.write(pybegin)
-                pyconsole = True
-            # If line saves figure, add its name to the figures list so it can be
-            # printed.
-            if line.__contains__('filename='):
-                figures.append(line.split("'")[1])
+                pytex = True
             tex.write(line)
 
-    tex.write(pyend)
+        # Line is a Python line.
+        elif not line.startswith("# ") and line != '\n':
+            if not pytex:
+                tex.write(pybegin)
+                pytex = True
+            tex.write(line)
+
+    if pytex:
+        tex.write(pyend)
     if parts:
         tex.write(end_parts)
+
     return tex
 
 
